@@ -1,38 +1,55 @@
-// This is the boilerplate code given for you
-// You can modify this code
-// Product data
-const products = [
-  { id: 1, name: "Product 1", price: 10 },
-  { id: 2, name: "Product 2", price: 20 },
-  { id: 3, name: "Product 3", price: 30 },
-  { id: 4, name: "Product 4", price: 40 },
-  { id: 5, name: "Product 5", price: 50 },
-];
+document.addEventListener('DOMContentLoaded', function () {
+  const productList = document.getElementById('product-list');
+  const shoppingCart = document.getElementById('shopping-cart');
 
-// DOM elements
-const productList = document.getElementById("product-list");
+  // Sample product data
+  const products = [
+    { id: 1, name: 'Product A', price: 10 },
+    { id: 2, name: 'Product B', price: 20 },
+    { id: 3, name: 'Product C', price: 30 },
+  ];
 
-// Render product list
-function renderProducts() {
-  products.forEach((product) => {
-    const li = document.createElement("li");
-    li.innerHTML = `${product.name} - $${product.price} <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>`;
-    productList.appendChild(li);
-  });
-}
+  // Retrieve cart data from session storage or initialize an empty cart
+  let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-// Render cart list
-function renderCart() {}
+  // Function to render product list
+  function renderProductList() {
+    productList.innerHTML = '';
+    products.forEach(product => {
+      const productElement = document.createElement('div');
+      productElement.classList.add('product');
+      productElement.innerHTML = `
+        <p>${product.name} - $${product.price}</p>
+        <button onclick="addToCart(${product.id})">Add to Cart</button>
+      `;
+      productList.appendChild(productElement);
+    });
+  }
 
-// Add item to cart
-function addToCart(productId) {}
+  // Function to render shopping cart
+  function renderShoppingCart() {
+    shoppingCart.innerHTML = '';
+    cart.forEach(item => {
+      const cartItem = document.createElement('li');
+      cartItem.textContent = `${item.name} - $${item.price}`;
+      shoppingCart.appendChild(cartItem);
+    });
+  }
 
-// Remove item from cart
-function removeFromCart(productId) {}
+  // Function to add product to cart
+  window.addToCart = function (productId) {
+    const productToAdd = products.find(product => product.id === productId);
+    cart.push(productToAdd);
+    updateCart();
+  };
 
-// Clear cart
-function clearCart() {}
+  // Function to update cart in session storage and render the cart
+  function updateCart() {
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+    renderShoppingCart();
+  }
 
-// Initial render
-renderProducts();
-renderCart();
+  // Initial rendering
+  renderProductList();
+  renderShoppingCart();
+});
